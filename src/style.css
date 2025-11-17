@@ -114,8 +114,7 @@ body {
   min-width: 900px; /* 依你的欄位數量調整，比如 800/900/1000px */
 }
 .text-limit-10 {
-  display: inline-block;
-  max-width: 20ch;       /* 限制最多 10 個字元寬度 */
+  max-width: 20ch;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
