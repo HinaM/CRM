@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>CRM測試</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/vuesax@3.12.2/dist/vuesax.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons/css/boxicons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <link rel="stylesheet" href="./src/style.css">
+  <!-- 你額外用的 Boxicons，可以保留 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons/css/boxicons.min.css">
+  
+</head>
+<body>
+  <div id="app">
+
+    <vs-navbar v-model="activeItem" class="nabarx">
+      <div slot="title">
+        <vs-navbar-title>
+          管理系統
+        </vs-navbar-title>
+      </div>
+
+      <vs-navbar-item index="0">
+        <a href="#">Home</a>
+      </vs-navbar-item>
+      <vs-navbar-item index="1">
+        <a href="#">News</a>
+      </vs-navbar-item>
+      <vs-navbar-item index="2">
+        <a href="#">Update</a>
+      </vs-navbar-item>
+    </vs-navbar>
+
+    
+    
+    <div>
+
+      
+      <vs-tabs>
+        <vs-tab label="庫存紀錄表">
+
+          <div>
+            <vs-collapse>
+             <vs-collapse-item  icon-arrow="grade">
+               <div slot="header">
+                 篩選工具
+               </div>
+               <div>
+                <vs-row class="filter-row" vs-type="flex">
+                  <vs-col class="filter-col">
+                    <vs-input class="filter-input" label-placeholder="商品編號" v-model="value1"/>
+                  </vs-col>
+                
+                  <vs-col class="filter-col">
+                    <vs-input class="filter-input" label-placeholder="商品名稱" v-model="value2"/>
+                  </vs-col>
+                
+                  <vs-col class="filter-col">
+                    <vs-input class="filter-input" label-placeholder="商品類別" v-model="value3"/>
+                  </vs-col>
+                </vs-row>
+                
+                
+              </div>
+             </vs-collapse-item>
+             
+          </div>
+
+          <div>
+            
+
+            <vs-row>
+
+              <vs-col v-tooltip="'col - 4'" vs-type="flex" vs-justify="center" vs-align="center" vs-w="4" >
+                <div class="py-1" style="width: 80%; display: flex; align-items: center; justify-content: center;flex-direction: column;">
+                  <h4 class="text-success">可供銷售</h4>
+                  {{inventory_count[0].count}}
+                </div>
+              </vs-col>
+
+              <vs-col v-tooltip="'col - 4'" vs-type="flex" vs-justify="center" vs-align="center" vs-w="4">
+                <div class="py-1" style="width: 80%; display: flex; align-items: center; justify-content: center;flex-direction: column;">
+                  <h4 class="text-warning">需補貨</h4>
+                  {{inventory_count[1].count}}
+                </div>
+              </vs-col>
+
+              <vs-col v-tooltip="'col - 4'" vs-type="flex" vs-justify="center" vs-align="center" vs-w="4">
+                <div class="py-1" style="width: 80%; display: flex; align-items: center; justify-content: center;flex-direction: column;">
+                  <h4 class="text-danger">缺貨中</h4>
+                  {{inventory_count[2].count}}
+                </div>
+              </vs-col>
+
+            </vs-row>
+            
+            
+          </div>
+
+          <div class="con-tab-ejemplo">
+            <div class="table-scroll">
+              <vs-table max-items="8" pagination :data="tickets" >
+                <!--
+                <template slot="header">
+                  <vs-row class="px-5" vs-align="flex-end" vs-type="flex" vs-justify="space-between" vs-w="12">
+                    <vs-col :key="index" vs-type="flex" vs-justify="center" vs-align="center" vs-w="2">
+                      <vs-button color="success" type="filled" @click="exportCSV">匯出CSV</vs-button>
+                    </vs-col>
+                    <vs-col :key="index" vs-type="flex" vs-justify="right" vs-w="2">
+                      <vs-button color="success" type="filled" @click="exportCSV">匯出CSV</vs-button>
+                    </vs-col>
+                  </vs-row>
+                </template>
+                -->
+                <template slot="thead">
+                  <vs-th class="py-3">
+                    商品編號
+                  </vs-th>
+                  <vs-th class="py-3">
+                    商品名稱
+                  </vs-th>
+                  <vs-th class="py-3">
+                    商品類別
+                  </vs-th>
+                  <vs-th class="py-3">
+                    商品價格
+                  </vs-th>
+                  <vs-th class="py-3">
+                    在庫數量
+                  </vs-th>
+                  <vs-th class="py-3">
+                    商品狀態
+                  </vs-th>
+                  <vs-th class="py-3">
+                    狀態
+                  </vs-th>
+                  <vs-th class="py-3">
+                    操作
+                  </vs-th>
+                </template>
+          
+                <template slot-scope="{data}">
+                  <vs-tr :key="indextr" v-for="(tr, indextr) in data" >
+                    <vs-td>
+                      {{tr.id}}
+                    </vs-td>
+                    <vs-td class="text-limit-10">
+                      {{tr.title}}
+                      
+                    </vs-td>
+
+                    <vs-td>
+                      {{tr.category}}
+                    </vs-td>
+          
+                    <vs-td>
+                      {{tr.price}}
+                    </vs-td>
+          
+                    <vs-td>
+                      {{tr.inventory}}
+                    </vs-td>
+
+                    <vs-td>
+                      <vs-td v-if="tr.launch">
+                        <vs-chip transparent color="#24c1a0">
+                          上架中
+                        </vs-chip>
+                      </vs-td>
+                      <vs-td v-else>
+                        <vs-chip transparent color="#a1202b">
+                          未上架
+                        </vs-chip>
+                      </vs-td>
+                      
+                    </vs-td>
+          
+                    <vs-td v-if="tr.inventory > 0 && tr.inventory >= tr.safety_stock">
+                      <vs-chip transparent color="#24c1a0">
+                        可供銷售
+                      </vs-chip>
+                    </vs-td>
+                    <vs-td v-else-if="tr.inventory > 0 && tr.inventory < tr.safety_stock">
+                      <vs-chip transparent color="warning">
+                        需補貨
+                      </vs-chip>
+                    </vs-td>
+                    <vs-td v-else-if="tr.inventory == 0">
+                      <vs-chip transparent color="#a1202b">
+                        缺貨中
+                      </vs-chip>
+                    </vs-td>
+                    <vs-td>
+                      <vs-button @click="popupActivo=true; edit(tr.id)" >查看</vs-button>
+                      <vs-button>調整庫存</vs-button>
+                      <vs-button>編輯商品</vs-button>
+                    </vs-td>
+        
+                  </vs-tr>
+
+                  
+
+                  
+                </template>
+              </vs-table>
+
+              <vs-popup class="holamundo"  title="編輯商品" :active.sync="popupActivo">
+                
+                
+                <vs-row>
+                  <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                    <vs-input class="filter-input py-1" label-placeholder="商品名稱" v-model="valueTitle"/>
+                  </vs-col>
+
+                  <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                    <vs-input class="filter-input py-1" label-placeholder="商品描述" v-model="valueDescription"/>
+                  </vs-col>
+                
+                  <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                    <vs-input class="filter-input py-1" label-placeholder="商品價格" v-model="valuePrice"/>
+                  </vs-col>
+
+                  <vs-col vs-type="flex"  vs-align="center" vs-w="12" class="py-1">
+                    <label for="" class="pe-2">上架</label>
+                    <vs-switch v-model="valueLaunch">
+                      <span slot="on">On</span>
+                      <span slot="off">Off</span>
+                    </vs-switch>
+                  </vs-col>
+                  
+                  
+                  
+                </vs-row>
+                
+              </vs-popup>
+              
+        
+            </div>
+          </div>
+        </vs-tab>
+
+
+
+        <vs-tab label="Service">
+          <div class="con-tab-ejemplo">
+            Service
+          </div>
+        </vs-tab>
+        <vs-tab label="login">
+          <div class="con-tab-ejemplo">
+            login
+          </div>
+        </vs-tab>
+        <vs-tab disabled label="Disabled">
+          <div class="con-tab-ejemplo">
+            Disabled
+          </div>
+        </vs-tab>
+        <vs-tab label="Lorem ipsum dolor sit amet">
+          <div class="con-tab-ejemplo">
+            Lorem ipsum dolor sit amet
+          </div>
+        </vs-tab>
+      </vs-tabs>
+    </div>
+    
+
+    
+    
+    
+      
+    
+
+    
+  </div>
+  
+</body>
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/vuesax@3.12.2/dist/vuesax.umd.js"></script>
+<script src="./src/app.js"></script>
+</html>
