@@ -77,6 +77,8 @@
              
           </div>
 
+          {{tickets}}
+
           <div>
             
 
@@ -149,7 +151,7 @@
                   <vs-th class="py-3" @click.native="filter('launch')">
                     商品狀態
                   </vs-th>
-                  <vs-th class="py-3" >
+                  <vs-th class="py-3"  @click.native="filter('status')">
                     狀態
                   </vs-th>
                   <vs-th class="py-3">

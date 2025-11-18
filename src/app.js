@@ -55,12 +55,15 @@ new Vue({
             for(let i = 0 ; i <= data.length ; i++){
               if( data[i].inventory > 0 && data[i].inventory >= data[i].safety_stock ){
                 this.inventory_count[0].count ++;
+                this.tickets[i].status = "可供銷售";
               }
               else if( data[i].inventory > 0 && data[i].inventory < data[i].safety_stock ){
                 this.inventory_count[1].count ++;
+                this.tickets[i].status = "需補貨";
               }
               else{
                 this.inventory_count[2].count ++;
+                this.tickets[i].status = "缺貨中";
               }
             }
 
@@ -92,7 +95,7 @@ new Vue({
             let value;
           
             if (h.key === 'status') {
-              value = getStatus(row); // ⭐ 用動態計算
+              value = getStatus(row); 
             } else {
               value = row[h.key];
             }
@@ -184,10 +187,18 @@ new Vue({
         window.location.reload();
 
       },
+      
       async filter(n){
         console.log(n);
 
         this.filterbtn = n;
+
+        if (n === 'status') {
+          this.tickets = [...this.tickets].sort((a, b) => {
+            return a.status.localeCompare(b.status) 
+          })
+          return
+        }
 
         try {
           const { data, error } = await supabase
