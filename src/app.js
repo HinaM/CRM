@@ -23,11 +23,13 @@ new Vue({
         { name: "需補貨" , count: 0},
         { name: "缺貨中" , count: 0}
       ],
-      popupActivo:false,
+      popupActivo: false,
+      valueId: "",
       valueTitle: "",
       valuePrice: 0,
       valueDescription: "",
-      valueLaunch: false
+      valueLaunch: false,
+      valueSafetyStock: 0
     },
     async mounted() {
         try {
@@ -109,18 +111,50 @@ new Vue({
 
         for(let i = 0 ; i <= this.tickets.length ; i++){
           if (n == this.tickets[i].id){
+            this.valueId = this.tickets[i].id;
             this.valueTitle = this.tickets[i].title;
             this.valuePrice = this.tickets[i].price;
             this.valueDescription = this.tickets[i].description;
             this.valueLaunch = this.tickets[i].launch;
+            this.valueSafetyStock = this.tickets[i].safety_stock;
           }
         }
         
         
         
 
+      },
+      async updatetickets(n){
+
+        const id = n;
+        
+        if (
+          !this.valueTitle.trim() ||
+          !this.valueDescription.trim() ||
+          !this.valuePrice.trim() ||
+          !this.valueSafetyStock.trim()
+        ) {
+          alert("請輸入所有欄位內容。");
+          return;
+        }
+
+        const price = Number(this.valuePrice);
+
+        if (isNaN(price) || price <= 0 || !Number.isInteger(price)) {
+          alert("價格格式錯誤，請輸入正整數。");
+          return;
+        }
+
+        const SafetyStock = Number(this.valueSafetyStock);
+
+        if (isNaN(SafetyStock) || SafetyStock <= 0 || !Number.isInteger(SafetyStock)) {
+          alert("價格格式錯誤，請輸入正整數。");
+          return;
+        }
+
+
+        console.log(id);
       }
-      
     },
     computed: {
       

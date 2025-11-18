@@ -195,9 +195,8 @@
                       </vs-chip>
                     </vs-td>
                     <vs-td>
-                      <vs-button @click="popupActivo=true; edit(tr.id)" >查看</vs-button>
+                      <vs-button @click="popupActivo=true; edit(tr.id)" >編輯商品</vs-button>
                       <vs-button>調整庫存</vs-button>
-                      <vs-button>編輯商品</vs-button>
                     </vs-td>
         
                   </vs-tr>
@@ -224,13 +223,38 @@
                     <vs-input class="filter-input py-1" label-placeholder="商品價格" v-model="valuePrice"/>
                   </vs-col>
 
+                  <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                    <vs-input class="filter-input py-1" label-placeholder="安全庫存量" v-model="valueSafetyStock"/>
+                  </vs-col>
+
+
+                  <!--
+                  <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                    <vs-tooltip style="width: 100%;" text="Tooltip delay 0.5s">
+                      <vs-input class="filter-input py-1" label-placeholder="安全庫存量" v-model="valueSafetyStock"/>
+                    
+                    </vs-tooltip>
+                  </vs-col>
+
+                  -->
+
                   <vs-col vs-type="flex"  vs-align="center" vs-w="12" class="py-1">
-                    <label for="" class="pe-2">上架</label>
+                    <label for="" class="pe-2 py-1">商品上架</label>
                     <vs-switch v-model="valueLaunch">
                       <span slot="on">On</span>
                       <span slot="off">Off</span>
                     </vs-switch>
                   </vs-col>
+
+
+                  <vs-row class="py-1" style="width: 100%; display: flex;justify-content: end;">
+                    <div>
+                      <vs-button color="primary" type="filled" @click="updatetickets(valueId)">確定修改</vs-button>
+                      <vs-button color="danger" type="filled" @click="popupActivo = false">取消</vs-button>
+                    </div>
+                  </vs-row>
+
+                  
                   
                   
                   

@@ -102,16 +102,12 @@ body {
 .con-tab-ejemplo {
   width: 100%;
 }
-
-/* 讓小螢幕時可以左右滑動 */
 .table-scroll {
   width: 100%;
   overflow-x: auto;
 }
-
-/* 讓裡面的表格有一個最小寬度（小於這個就出現 scrollbar） */
 .table-scroll .vs-con-table {
-  min-width: 900px; /* 依你的欄位數量調整，比如 800/900/1000px */
+  min-width: 900px;
 }
 .text-limit-10 {
   max-width: 20ch;
