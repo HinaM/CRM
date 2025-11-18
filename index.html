@@ -108,6 +108,8 @@
             
           </div>
 
+
+
           <div class="con-tab-ejemplo">
             <div class="table-scroll">
               <vs-table max-items="8" pagination :data="tickets" >
@@ -124,25 +126,30 @@
                 </template>
                 -->
                 <template slot="thead">
-                  <vs-th class="py-3">
+                  
+                  <vs-th class="py-3" @click.native="filter('id')">
                     商品編號
                   </vs-th>
-                  <vs-th class="py-3">
+                  
+
+                  <vs-th class="py-3" @click.native="filter('title')">
                     商品名稱
                   </vs-th>
-                  <vs-th class="py-3">
+                  
+                  
+                  <vs-th class="py-3" @click.native="filter('category')">
                     商品類別
                   </vs-th>
-                  <vs-th class="py-3">
+                  <vs-th class="py-3" @click.native="filter('price')">
                     商品價格
                   </vs-th>
-                  <vs-th class="py-3">
+                  <vs-th class="py-3" @click.native="filter('inventory')">
                     在庫數量
                   </vs-th>
-                  <vs-th class="py-3">
+                  <vs-th class="py-3" @click.native="filter('launch')">
                     商品狀態
                   </vs-th>
-                  <vs-th class="py-3">
+                  <vs-th class="py-3" >
                     狀態
                   </vs-th>
                   <vs-th class="py-3">
@@ -151,7 +158,7 @@
                 </template>
           
                 <template slot-scope="{data}">
-                  <vs-tr :key="indextr" v-for="(tr, indextr) in data" >
+                  <vs-tr :key="tr.id" v-for="tr in data" >
                     <vs-td>
                       {{tr.id}}
                     </vs-td>
@@ -186,21 +193,34 @@
                       
                     </vs-td>
           
-                    <vs-td v-if="tr.inventory > 0 && tr.inventory >= tr.safety_stock">
-                      <vs-chip transparent color="#24c1a0">
+                    <vs-td>
+                      <vs-chip
+                        v-if="tr.inventory > 0 && tr.inventory >= tr.safety_stock"
+                        transparent
+                        color="#24c1a0"
+                      >
                         可供銷售
                       </vs-chip>
-                    </vs-td>
-                    <vs-td v-else-if="tr.inventory > 0 && tr.inventory < tr.safety_stock">
-                      <vs-chip transparent color="warning">
+                  
+                      <vs-chip
+                        v-else-if="tr.inventory > 0 && tr.inventory < tr.safety_stock"
+                        transparent
+                        color="warning"
+                      >
                         需補貨
                       </vs-chip>
-                    </vs-td>
-                    <vs-td v-else-if="tr.inventory == 0">
-                      <vs-chip transparent color="#a1202b">
+                  
+                      <vs-chip
+                        v-else
+                        transparent
+                        color="#a1202b"
+                      >
                         缺貨中
                       </vs-chip>
                     </vs-td>
+
+
+
                     <vs-td>
                       <vs-button @click="popupActivo=true; edit(tr.id)" >編輯商品</vs-button>
                       <vs-button>調整庫存</vs-button>

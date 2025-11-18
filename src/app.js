@@ -36,7 +36,9 @@ new Vue({
       updateA_description: "" , 
       updateA_price: 0 ,
       updateA_safety_stock: 0,
-      updateA_launch: false
+      updateA_launch: false,
+
+      filterbtn: ""
       
 
     },
@@ -180,6 +182,27 @@ new Vue({
 
         alert("y04");
         window.location.reload();
+
+      },
+      async filter(n){
+        console.log(n);
+
+        this.filterbtn = n;
+
+        try {
+          const { data, error } = await supabase
+              .from('tickets')
+              .select('*')
+              .order( n, { ascending: true })
+  
+          if (error) throw error
+          this.tickets = data
+
+
+  
+      } catch (err) {
+          console.error('Supabase select failed:', err)
+      }
 
       }
     },
