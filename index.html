@@ -52,16 +52,23 @@
                <div>
                 <vs-row class="filter-row" vs-type="flex">
                   <vs-col class="filter-col">
-                    <vs-input class="filter-input" label-placeholder="商品編號" v-model="value1"/>
+                    <vs-input class="filter-input" label-placeholder="商品編號"/>
                   </vs-col>
                 
                   <vs-col class="filter-col">
-                    <vs-input class="filter-input" label-placeholder="商品名稱" v-model="value2"/>
+                    <vs-input class="filter-input" label-placeholder="商品名稱"/>
+                  </vs-col>
+
+                  <vs-col class="filter-col">
+                    <vs-input class="filter-input" label-placeholder="商品類別"/>
                   </vs-col>
                 
+                  <!--
                   <vs-col class="filter-col">
                     <vs-input class="filter-input" label-placeholder="商品類別" v-model="value3"/>
                   </vs-col>
+                -->
+                  
                 </vs-row>
                 
                 
@@ -220,11 +227,11 @@
                   </vs-col>
                 
                   <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
-                    <vs-input class="filter-input py-1" label-placeholder="商品價格" v-model="valuePrice"/>
+                    <vs-input type="number" class="filter-input py-1" label-placeholder="商品價格" v-model.number="valuePrice"/>
                   </vs-col>
 
                   <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
-                    <vs-input class="filter-input py-1" label-placeholder="安全庫存量" v-model="valueSafetyStock"/>
+                    <vs-input type="number" class="filter-input py-1" label-placeholder="安全庫存量" v-model.number="valueSafetyStock"/>
                   </vs-col>
 
 
