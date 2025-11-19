@@ -209,6 +209,18 @@ new Vue({
           if (error) throw error
           this.tickets = data
 
+          for(let i = 0 ; i <= data.length ; i++){
+            if( data[i].inventory > 0 && data[i].inventory >= data[i].safety_stock ){
+              this.tickets[i].status = "可供銷售";
+            }
+            else if( data[i].inventory > 0 && data[i].inventory < data[i].safety_stock ){
+              this.tickets[i].status = "需補貨";
+            }
+            else{
+              this.tickets[i].status = "缺貨中";
+            }
+          }
+
 
   
       } catch (err) {
