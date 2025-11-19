@@ -73,6 +73,14 @@ new Vue({
         }
     },
     methods: {
+
+      toTwTime (utcString) {
+        const date = new Date(utcString)
+        return date.toLocaleString('sv-SE', {
+          timeZone: 'Asia/Taipei',
+          hour12: false
+        })
+      },
       
       exportCSV() {
         const rows = this.tickets;
@@ -176,11 +184,11 @@ new Vue({
 
 
         /*alert(this.updateA_launch);*/
-
+        const now = new Date().toISOString()
         
         const { error: updateError } = await supabase
         .from('tickets')
-        .update({ title: this.updateA_title ,  description: this.updateA_description , price: this.updateA_price , safety_stock:this.updateA_safety_stock , launch: this.updateA_launch})
+        .update({ title: this.updateA_title ,  description: this.updateA_description , price: this.updateA_price , safety_stock:this.updateA_safety_stock , launch: this.updateA_launch , latest_time: now})
         .eq('id', id);
 
         alert("y04");

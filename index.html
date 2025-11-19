@@ -150,7 +150,10 @@
                     商品狀態
                   </vs-th>
                   <vs-th class="py-3"  @click.native="filter('status')">
-                    狀態
+                    上架狀態
+                  </vs-th>
+                  <vs-th class="py-3"  @click.native="filter('latest_time')">
+                    修改時間
                   </vs-th>
                   <vs-th class="py-3">
                     操作
@@ -219,6 +222,9 @@
                       </vs-chip>
                     </vs-td>
 
+                    <vs-td>
+                      {{toTwTime(tr.latest_time)}}
+                    </vs-td>
 
 
                     <vs-td>
