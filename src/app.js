@@ -38,7 +38,8 @@ new Vue({
       updateA_safety_stock: 0,
       updateA_launch: false,
 
-      filterbtn: ""
+      filterbtn: "",
+      filter_sort: true
       
 
     },
@@ -201,9 +202,18 @@ new Vue({
 
         this.filterbtn = n;
 
-        if (n === 'status') {
+        if (n === 'status' && this.filter_sort == true) {
           this.tickets = [...this.tickets].sort((a, b) => {
+            this.filter_sort = !this.filter_sort
             return a.status.localeCompare(b.status) 
+          })
+          return
+        }
+
+        if (n === 'status' && this.filter_sort == false) {
+          this.tickets = [...this.tickets].sort((a, b) => {
+            this.filter_sort = !this.filter_sort
+            return b.status.localeCompare(a.status) 
           })
           return
         }
@@ -212,9 +222,10 @@ new Vue({
           const { data, error } = await supabase
               .from('tickets')
               .select('*')
-              .order( n, { ascending: true })
+              .order( n, { ascending: this.filter_sort })
   
           if (error) throw error
+          this.filter_sort = !this.filter_sort
           this.tickets = data
 
           for(let i = 0 ; i <= data.length ; i++){
