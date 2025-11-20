@@ -39,7 +39,9 @@ new Vue({
       updateA_launch: false,
 
       filterbtn: "",
-      filter_sort: true
+      filter_sort: true,
+
+      searchTitle: ""
       
 
     },
@@ -197,24 +199,55 @@ new Vue({
 
       },
       
-      async filter(n){
-        console.log(n);
-
+      async filter(n, se){
+        
+        
         this.filterbtn = n;
+        se = this.searchTitle;
+        console.log(se);
 
+        /*
         if (n === 'status' && this.filter_sort == true) {
           this.tickets = [...this.tickets].sort((a, b) => {
-            this.filter_sort = !this.filter_sort
+            
             return a.status.localeCompare(b.status) 
           })
+          this.filter_sort = !this.filter_sort
           return
         }
+        */
+
+        if (n === 'status' && this.filter_sort === true) {
+          this.tickets = [...this.tickets].sort((a, b) => {
+            return a.status.localeCompare(b.status)
+          })
+        
+
+          this.filter_sort = !this.filter_sort
+        
+          if (se && se.trim() !== '') {
+            this.tickets = this.tickets.filter(ticket =>
+              ticket.title && ticket.title.includes(se)
+            )
+          }
+        
+          return
+        }
+        
 
         if (n === 'status' && this.filter_sort == false) {
+          
           this.tickets = [...this.tickets].sort((a, b) => {
-            this.filter_sort = !this.filter_sort
             return b.status.localeCompare(a.status) 
           })
+          this.filter_sort = !this.filter_sort
+        
+          if (se && se.trim() !== '') {
+            this.tickets = this.tickets.filter(ticket =>
+              ticket.title && ticket.title.includes(se)
+            )
+          }
+
           return
         }
 
@@ -226,19 +259,32 @@ new Vue({
   
           if (error) throw error
           this.filter_sort = !this.filter_sort
-          this.tickets = data
+          const rows = data || []
 
-          for(let i = 0 ; i <= data.length ; i++){
-            if( data[i].inventory > 0 && data[i].inventory >= data[i].safety_stock ){
-              this.tickets[i].status = "可供銷售";
-            }
-            else if( data[i].inventory > 0 && data[i].inventory < data[i].safety_stock ){
-              this.tickets[i].status = "需補貨";
-            }
-            else{
-              this.tickets[i].status = "缺貨中";
+          for (let i = 0; i < rows.length; i++) {
+            const item = rows[i]
+
+            if (item.inventory > 0 && item.inventory >= item.safety_stock) {
+              item.status = '可供銷售'
+            } else if (item.inventory > 0 && item.inventory < item.safety_stock) {
+              item.status = '需補貨'
+            } else {
+              item.status = '缺貨中'
             }
           }
+
+          // 再篩選 se
+          let result = rows
+
+          if (se && se.trim() !== '') {
+            const keyword = se.trim()
+            result = rows.filter(item =>
+              item.title && item.title.includes(keyword)
+            )
+          }
+
+          this.tickets = result
+
 
 
   

@@ -54,7 +54,7 @@
                   </vs-col>
                 
                   <vs-col class="filter-col">
-                    <vs-input class="filter-input" label-placeholder="商品名稱"/>
+                    <vs-input class="filter-input" label-placeholder="商品名稱" v-model="searchTitle"/>
                   </vs-col>
 
                   <vs-col class="filter-col">
@@ -104,6 +104,8 @@
               </vs-col>
 
             </vs-row>
+
+
             
             
           </div>
@@ -127,32 +129,32 @@
                 -->
                 <template slot="thead">
                   
-                  <vs-th class="py-3" @click.native="filter('id')">
+                  <vs-th class="py-3" @click.native="filter('id', 'se')">
                     商品編號
                   </vs-th>
                   
 
-                  <vs-th class="py-3" @click.native="filter('title')">
+                  <vs-th class="py-3" @click.native="filter('title', 'se')">
                     商品名稱
                   </vs-th>
                   
                   
-                  <vs-th class="py-3" @click.native="filter('category')">
+                  <vs-th class="py-3" @click.native="filter('category', 'se')">
                     商品類別
                   </vs-th>
-                  <vs-th class="py-3" @click.native="filter('price')">
+                  <vs-th class="py-3" @click.native="filter('price', 'se')">
                     商品價格
                   </vs-th>
-                  <vs-th class="py-3" @click.native="filter('inventory')">
+                  <vs-th class="py-3" @click.native="filter('inventory', 'se')">
                     在庫數量
                   </vs-th>
-                  <vs-th class="py-3" @click.native="filter('launch')">
+                  <vs-th class="py-3" @click.native="filter('launch', 'se')">
                     商品狀態
                   </vs-th>
-                  <vs-th class="py-3"  @click.native="filter('status')">
+                  <vs-th class="py-3"  @click.native="filter('status', 'se')">
                     上架狀態
                   </vs-th>
-                  <vs-th class="py-3"  @click.native="filter('latest_time')">
+                  <vs-th class="py-3"  @click.native="filter('latest_time', 'se')">
                     修改時間
                   </vs-th>
                   <vs-th class="py-3">
