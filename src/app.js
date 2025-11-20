@@ -194,10 +194,65 @@ new Vue({
         .update({ title: this.updateA_title ,  description: this.updateA_description , price: this.updateA_price , safety_stock:this.updateA_safety_stock , launch: this.updateA_launch , latest_time: now})
         .eq('id', id);
 
-        alert("y04");
+        alert("修改成功！");
         window.location.reload();
 
       },
+      async searchTickets() {
+        const keyword = this.searchTitle.trim()
+    
+        
+        if (!keyword) {
+          
+          const { data, error } = await supabase
+            .from('tickets')
+            .select('*')
+            .order('id', { ascending: true })
+    
+          if (error) {
+            console.error(error)
+            return
+          }
+    
+          this.tickets = (data || []).map(row => {
+            let statusText = ''
+            if (row.inventory > 0 && row.inventory >= row.safety_stock) {
+              statusText = '可供銷售'
+            } else if (row.inventory > 0 && row.inventory < row.safety_stock) {
+              statusText = '需補貨'
+            } else {
+              statusText = '缺貨中'
+            }
+            return { ...row, status: statusText }
+          })
+          return
+        }
+    
+        
+        const { data, error } = await supabase
+          .from('tickets')
+          .select('*')
+          .ilike('title', `%${keyword}%`) 
+          .order('id', { ascending: true }) 
+    
+        if (error) {
+          console.error(error)
+          return
+        }
+    
+        this.tickets = (data || []).map(row => {
+          let statusText = ''
+          if (row.inventory > 0 && row.inventory >= row.safety_stock) {
+            statusText = '可供銷售'
+          } else if (row.inventory > 0 && row.inventory < row.safety_stock) {
+            statusText = '需補貨'
+          } else {
+            statusText = '缺貨中'
+          }
+          return { ...row, status: statusText }
+        })
+      },
+    
       
       async filter(n, se){
         
@@ -205,17 +260,6 @@ new Vue({
         this.filterbtn = n;
         se = this.searchTitle;
         console.log(se);
-
-        /*
-        if (n === 'status' && this.filter_sort == true) {
-          this.tickets = [...this.tickets].sort((a, b) => {
-            
-            return a.status.localeCompare(b.status) 
-          })
-          this.filter_sort = !this.filter_sort
-          return
-        }
-        */
 
         if (n === 'status' && this.filter_sort === true) {
           this.tickets = [...this.tickets].sort((a, b) => {
