@@ -50,7 +50,7 @@
                <div>
                 <vs-row class="filter-row" vs-type="flex">
                   <vs-col class="filter-col">
-                    <vs-input class="filter-input" label-placeholder="商品編號"/>
+                    <vs-input class="filter-input" label-placeholder="商品編號" v-model="searchId"/>
                   </vs-col>
                 
                   <vs-col class="filter-col">
@@ -71,7 +71,7 @@
                 
                 
               </div>
-              <vs-button @click.native="searchTickets('id', 'se')">搜尋商品</vs-button>
+              <vs-button @click.native="searchTickets()">搜尋商品</vs-button>
              </vs-collapse-item>
              
           </div>
@@ -130,7 +130,7 @@
                 -->
                 <template slot="thead">
                   
-                  <vs-th class="py-3" @click.native="filter('id', 'se')">
+                  <vs-th class="py-3" @click.native="filter('product_id', 'se')">
                     商品編號
                   </vs-th>
                   
@@ -166,7 +166,7 @@
                 <template slot-scope="{data}">
                   <vs-tr :key="tr.id" v-for="tr in data" >
                     <vs-td>
-                      {{tr.id}}
+                      {{tr.product_id}}
                     </vs-td>
                     <vs-td class="text-limit-10">
                       {{tr.title}}

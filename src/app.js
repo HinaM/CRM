@@ -41,7 +41,8 @@ new Vue({
       filterbtn: "",
       filter_sort: true,
 
-      searchTitle: ""
+      searchTitle: "",
+      searchId: ""
       
 
     },
@@ -199,10 +200,12 @@ new Vue({
 
       },
       async searchTickets() {
-        const keyword = this.searchTitle.trim()
+        const keyword = this.searchTitle.trim();
+        const keywordId = this.searchId.trim();
     
+        console.log(!keyword);
         
-        if (!keyword) {
+        if (!keyword && !keywordId) {
           
           const { data, error } = await supabase
             .from('tickets')
@@ -227,30 +230,61 @@ new Vue({
           })
           return
         }
-    
-        
-        const { data, error } = await supabase
+
+
+        if (keyword) {
+          
+          const { data, error } = await supabase
           .from('tickets')
           .select('*')
           .ilike('title', `%${keyword}%`) 
           .order('id', { ascending: true }) 
     
-        if (error) {
-          console.error(error)
-          return
-        }
-    
-        this.tickets = (data || []).map(row => {
-          let statusText = ''
-          if (row.inventory > 0 && row.inventory >= row.safety_stock) {
-            statusText = '可供銷售'
-          } else if (row.inventory > 0 && row.inventory < row.safety_stock) {
-            statusText = '需補貨'
-          } else {
-            statusText = '缺貨中'
+          if (error) {
+            console.error(error)
+            return
           }
-          return { ...row, status: statusText }
-        })
+      
+          this.tickets = (data || []).map(row => {
+            let statusText = ''
+            if (row.inventory > 0 && row.inventory >= row.safety_stock) {
+              statusText = '可供銷售'
+            } else if (row.inventory > 0 && row.inventory < row.safety_stock) {
+              statusText = '需補貨'
+            } else {
+              statusText = '缺貨中'
+            }
+            return { ...row, status: statusText }
+          })
+        }
+       
+        if (keywordId) {
+          
+          const { data, error } = await supabase
+          .from('tickets')
+          .select('*')
+          .ilike('product_id', `%${keywordId}%`) 
+          .order('id', { ascending: true }) 
+    
+          if (error) {
+            console.error(error)
+            return
+          }
+      
+          this.tickets = (data || []).map(row => {
+            let statusText = ''
+            if (row.inventory > 0 && row.inventory >= row.safety_stock) {
+              statusText = '可供銷售'
+            } else if (row.inventory > 0 && row.inventory < row.safety_stock) {
+              statusText = '需補貨'
+            } else {
+              statusText = '缺貨中'
+            }
+            return { ...row, status: statusText }
+          })
+        }
+        
+        
       },
     
       
