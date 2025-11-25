@@ -297,13 +297,19 @@
 
                   -->
 
-                  <vs-col vs-type="flex"  vs-align="center" vs-w="12" class="py-1">
-                    <label for="" class="pe-2 py-1">商品上架</label>
-                    <vs-switch v-model="valueLaunch">
-                      <span slot="on">On</span>
-                      <span slot="off">Off</span>
-                    </vs-switch>
+                  
+
+                  <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                    <vs-input class="filter-input py-1" label-placeholder="商品分類" v-model="valueCata"/>
                   </vs-col>
+
+                    <vs-col vs-type="flex"  vs-align="center" vs-w="12" class="py-1">
+                      <label for="" class="pe-2 py-1">商品上架</label>
+                      <vs-switch v-model="valueLaunch">
+                        <span slot="on">On</span>
+                        <span slot="off">Off</span>
+                      </vs-switch>
+                    </vs-col>
 
 
                   <vs-row class="py-1" style="width: 100%; display: flex;justify-content: end;">

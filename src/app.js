@@ -30,6 +30,7 @@ new Vue({
       valueDescription: "",
       valueLaunch: false,
       valueSafetyStock: 0,
+      valueCata: "",
 
       catalog: [],
 
@@ -39,6 +40,7 @@ new Vue({
       updateA_price: 0 ,
       updateA_safety_stock: 0,
       updateA_launch: false,
+      updateA_cata: "",
 
       filterbtn: "",
       filter_sort: true,
@@ -148,6 +150,7 @@ new Vue({
             this.valueDescription = this.tickets[i].description;
             this.valueLaunch = this.tickets[i].launch;
             this.valueSafetyStock = this.tickets[i].safety_stock;
+            this.valueCata = this.tickets[i].category;
           }
         }
         
@@ -161,7 +164,8 @@ new Vue({
         
         if (
           !this.valueTitle.trim() ||
-          !this.valueDescription.trim()
+          !this.valueDescription.trim() ||
+          !this.valueCata.trim()
         ) {
           alert("請輸入所有欄位內容。");
           return;
@@ -190,6 +194,7 @@ new Vue({
         this.updateA_price = this.valuePrice;
         this.updateA_safety_stock = this.valueSafetyStock;
         this.updateA_launch = this.valueLaunch;
+        this.updateA_cata = this.valueCata;
 
 
         /*alert(this.updateA_launch);*/
@@ -197,7 +202,7 @@ new Vue({
         
         const { error: updateError } = await supabase
         .from('tickets')
-        .update({ title: this.updateA_title ,  description: this.updateA_description , price: this.updateA_price , safety_stock:this.updateA_safety_stock , launch: this.updateA_launch , latest_time: now})
+        .update({ title: this.updateA_title ,  description: this.updateA_description , price: this.updateA_price , safety_stock:this.updateA_safety_stock , launch: this.updateA_launch , category: this.updateA_cata, latest_time: now})
         .eq('id', id);
 
         alert("修改成功！");
