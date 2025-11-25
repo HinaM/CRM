@@ -31,6 +31,8 @@ new Vue({
       valueLaunch: false,
       valueSafetyStock: 0,
 
+      catalog: [],
+
 
       updateA_title: "", 
       updateA_description: "" , 
@@ -42,7 +44,8 @@ new Vue({
       filter_sort: true,
 
       searchTitle: "",
-      searchId: ""
+      searchId: "",
+      searchCata: ""
       
 
     },
@@ -55,6 +58,8 @@ new Vue({
     
             if (error) throw error
             this.tickets = data
+
+            this.cata()
 
             for(let i = 0 ; i <= data.length ; i++){
               if( data[i].inventory > 0 && data[i].inventory >= data[i].safety_stock ){
@@ -200,79 +205,45 @@ new Vue({
 
       },
       async searchTickets() {
-        const keyword = this.searchTitle.trim();
-        const keywordId = this.searchId.trim();
-    
-        console.log(!keyword);
         
-        if (!keyword && !keywordId) {
-          
-          const { data, error } = await supabase
+        const keyword     = (this.searchTitle || '').trim()
+        const keywordId   = (this.searchId || '').trim()
+        const keywordCata = (this.searchCata || '').trim()
+      
+        try {
+          let query = supabase
             .from('tickets')
             .select('*')
             .order('id', { ascending: true })
-    
-          if (error) {
-            console.error(error)
-            return
-          }
-    
-          this.tickets = (data || []).map(row => {
-            let statusText = ''
-            if (row.inventory > 0 && row.inventory >= row.safety_stock) {
-              statusText = '可供銷售'
-            } else if (row.inventory > 0 && row.inventory < row.safety_stock) {
-              statusText = '需補貨'
-            } else {
-              statusText = '缺貨中'
-            }
-            return { ...row, status: statusText }
-          })
-          return
-        }
-
-
-        if (keyword) {
+      
           
-          const { data, error } = await supabase
-          .from('tickets')
-          .select('*')
-          .ilike('title', `%${keyword}%`) 
-          .order('id', { ascending: true }) 
-    
+          if (keyword) {
+            query = query.ilike('title', `%${keyword}%`)
+          }
+      
+          
+          if (keywordId) {
+            query = query.ilike('product_id', `%${keywordId}%`)
+          }
+      
+        
+          if (keywordCata) {
+            query = query.eq('category', keywordCata)
+          }
+      
+        
+          const { data, error } = await query
+      
           if (error) {
-            console.error(error)
+            console.error('searchTickets error:', error)
             return
           }
       
-          this.tickets = (data || []).map(row => {
-            let statusText = ''
-            if (row.inventory > 0 && row.inventory >= row.safety_stock) {
-              statusText = '可供銷售'
-            } else if (row.inventory > 0 && row.inventory < row.safety_stock) {
-              statusText = '需補貨'
-            } else {
-              statusText = '缺貨中'
-            }
-            return { ...row, status: statusText }
-          })
-        }
        
-        if (keywordId) {
-          
-          const { data, error } = await supabase
-          .from('tickets')
-          .select('*')
-          .ilike('product_id', `%${keywordId}%`) 
-          .order('id', { ascending: true }) 
-    
-          if (error) {
-            console.error(error)
-            return
-          }
-      
-          this.tickets = (data || []).map(row => {
+          const rows = data || []
+          this.tickets = rows.map(row => {
             let statusText = ''
+      
             if (row.inventory > 0 && row.inventory >= row.safety_stock) {
               statusText = '可供銷售'
             } else if (row.inventory > 0 && row.inventory < row.safety_stock) {
@@ -280,68 +251,83 @@ new Vue({
             } else {
               statusText = '缺貨中'
             }
+      
             return { ...row, status: statusText }
           })
+        } catch (err) {
+          console.error('searchTickets exception:', err)
         }
-        
-        
       },
     
       
-      async filter(n, se){
-        
-        
-        this.filterbtn = n;
-        se = this.searchTitle;
-        console.log(se);
-
-        if (n === 'status' && this.filter_sort === true) {
-          this.tickets = [...this.tickets].sort((a, b) => {
-            return a.status.localeCompare(b.status)
+      async filter(n) {
+        this.filterbtn = n
+      
+        const keywordTitle = (this.searchTitle || '').trim()  
+        const keywordId    = (this.searchId || '').trim()    
+        const keywordCata  = (this.searchCata || '').trim()  
+      
+    
+        if (n === 'status') {
+          const asc = this.filter_sort
+          this.filter_sort = !this.filter_sort  
+      
+    
+          let sorted = [...this.tickets].sort((a, b) => {
+            const sa = a.status || ''
+            const sb = b.status || ''
+            return asc
+              ? sa.localeCompare(sb)
+              : sb.localeCompare(sa)
           })
-        
-
-          this.filter_sort = !this.filter_sort
-        
-          if (se && se.trim() !== '') {
-            this.tickets = this.tickets.filter(ticket =>
-              ticket.title && ticket.title.includes(se)
+      
+       
+          if (keywordTitle) {
+            sorted = sorted.filter(ticket =>
+              ticket.title && ticket.title.includes(keywordTitle)
             )
           }
-        
+      
+          this.tickets = sorted
           return
         }
+      
         
-
-        if (n === 'status' && this.filter_sort == false) {
-          
-          this.tickets = [...this.tickets].sort((a, b) => {
-            return b.status.localeCompare(a.status) 
-          })
-          this.filter_sort = !this.filter_sort
-        
-          if (se && se.trim() !== '') {
-            this.tickets = this.tickets.filter(ticket =>
-              ticket.title && ticket.title.includes(se)
-            )
-          }
-
-          return
-        }
-
         try {
-          const { data, error } = await supabase
-              .from('tickets')
-              .select('*')
-              .order( n, { ascending: this.filter_sort })
-  
+          let query = supabase
+            .from('tickets')
+            .select('*')
+      
+       
+          if (keywordTitle) {
+            query = query.ilike('title', `%${keywordTitle}%`)
+          }
+      
+       
+          if (keywordId) {
+            query = query.ilike('product_id', `%${keywordId}%`)
+          }
+      
+         
+          if (keywordCata) {
+            query = query.eq('category', keywordCata)
+          }
+      
+         
+          query = query.order(n, { ascending: this.filter_sort })
+      
+          const { data, error } = await query
+      
           if (error) throw error
+      
+          
           this.filter_sort = !this.filter_sort
+      
           const rows = data || []
-
+      
+          
           for (let i = 0; i < rows.length; i++) {
             const item = rows[i]
-
             if (item.inventory > 0 && item.inventory >= item.safety_stock) {
               item.status = '可供銷售'
             } else if (item.inventory > 0 && item.inventory < item.safety_stock) {
@@ -350,26 +336,27 @@ new Vue({
               item.status = '缺貨中'
             }
           }
-
-          // 再篩選 se
-          let result = rows
-
-          if (se && se.trim() !== '') {
-            const keyword = se.trim()
-            result = rows.filter(item =>
-              item.title && item.title.includes(keyword)
-            )
-          }
-
-          this.tickets = result
-
-
-
-  
-      } catch (err) {
+      
+          this.tickets = rows
+        } catch (err) {
           console.error('Supabase select failed:', err)
-      }
+        }
+      },
+      
 
+      async cata () {
+        const { data, error } = await supabase
+          .from('tickets')
+          .select('category')
+          .order('id', { ascending: true })
+    
+        if (error) {
+          console.error(error)
+          return
+        }
+    
+        const cata = data || []   
+        this.catalog = [...new Set(cata.map(item => item.category))]
       }
     },
     computed: {

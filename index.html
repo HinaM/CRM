@@ -46,20 +46,43 @@
              <vs-collapse-item  icon-arrow="grade">
                <div slot="header">
                  篩選工具
+                 
                </div>
                <div>
                 <vs-row class="filter-row" vs-type="flex">
                   <vs-col class="filter-col">
-                    <vs-input class="filter-input" label-placeholder="商品編號" v-model="searchId"/>
+                    <vs-input class="filter-input" label="商品編號" v-model="searchId"/>
                   </vs-col>
                 
                   <vs-col class="filter-col">
-                    <vs-input class="filter-input" label-placeholder="商品名稱" v-model="searchTitle"/>
+                    <vs-input class="filter-input" label="商品名稱" v-model="searchTitle"/>
                   </vs-col>
 
+
+
+                  
                   <vs-col class="filter-col">
-                    <vs-input class="filter-input" label-placeholder="商品類別"/>
+                    <vs-select
+                      autocomplete
+                      class="selectExample"
+                      label="商品類別"
+                      v-model="searchCata"
+                      style="width: 100%;"
+                    >
+                      <vs-select-item></vs-select-item>
+                      <vs-select-item
+                        v-for="(item, index) in catalog"
+                        :key="item"
+                        :value="item"
+                        :text="item"
+                      ></vs-select-item>
+                    </vs-select>
+
+                   
+
                   </vs-col>
+
+                  
                 
                   <!--
                   <vs-col class="filter-col">
