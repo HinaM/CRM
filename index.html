@@ -10,7 +10,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
   <link rel="stylesheet" href="./src/style.css">
-  <!-- 你額外用的 Boxicons，可以保留 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons/css/boxicons.min.css">
   
 </head>
@@ -82,17 +81,17 @@
       <vs-tabs>
         <vs-tab label="庫存紀錄表">
 
-          <div class="fit-box">
+          <div class="fit-box" style="margin-top: 30px;">
             <div class="py-2 px-2 fit-ti">
               <h3>篩選</h3>
             </div>
             <vs-row class="filter-row" vs-type="flex">
               <vs-col class="filter-col">
-                <vs-input class="filter-input" label="商品編號" v-model="searchId" color="#819a91" />
+                <vs-input class="filter-input" label="商品編號" v-model="searchId" color="#5b67a2" />
               </vs-col>
             
               <vs-col class="filter-col">
-                <vs-input class="filter-input" label="商品名稱" v-model="searchTitle" color="#819a91"/>
+                <vs-input class="filter-input" label="商品名稱" v-model="searchTitle" color="#5b67a2"/>
               </vs-col>
 
 
@@ -105,7 +104,7 @@
                   label="商品類別"
                   v-model="searchCata"
                   style="width: 100%;"
-                  color="#819a91"
+                  color="#5b67a2"
                 >
                   <vs-select-item></vs-select-item>
                   <vs-select-item
@@ -142,14 +141,15 @@
           <div class="con-tab-ejemplo" style="margin-top: 30px;">
             <div class="table-scroll">
 
-
-              <vs-table max-items="8" pagination  :data="tickets">
+              <vs-table max-items="10" pagination  :data="tickets">
                 <template slot="header">
+                 
                   <div class="py-2 px-2 fit-ti" style="width: 100%;">
                     <h3>庫存紀錄表</h3>
                   </div>
+                
                 </template>
-                <template slot="thead">
+                <template slot="thead" class="thead">
                   <vs-th sort-key="product_id" class="py-2">
                     商品編號
                   </vs-th>
@@ -241,7 +241,7 @@
                     </vs-td>
 
                     <vs-td :data="tr.latest_time">
-                      {{toTwTime(tr.latest_time)}}
+                      {{toTwTime(tr.latest_time)}} 
                     </vs-td>
 
 
@@ -255,153 +255,31 @@
           
           
               </vs-table>
- <!--
-              <vs-table max-items="8" pagination :data="tickets" >
-               
-                <template slot="header">
-                  <vs-row class="px-5" vs-align="flex-end" vs-type="flex" vs-justify="space-between" vs-w="12">
-                    <vs-col :key="index" vs-type="flex" vs-justify="center" vs-align="center" vs-w="2">
-                      <vs-button color="success" type="filled" @click="exportCSV">匯出CSV</vs-button>
-                    </vs-col>
-                    <vs-col :key="index" vs-type="flex" vs-justify="right" vs-w="2">
-                      <vs-button color="success" type="filled" @click="exportCSV">匯出CSV</vs-button>
-                    </vs-col>
-                  </vs-row>
-                </template>
-                
-                <template slot="thead">
-                  
-                  <vs-th class="py-3" @click.native="filter('product_id', 'se')">
-                    商品編號
-                  </vs-th>
-                  
 
-                  <vs-th class="py-3" @click.native="filter('title', 'se')">
-                    商品名稱
-                  </vs-th>
-                  
-                  
-                  <vs-th class="py-3" @click.native="filter('category', 'se')">
-                    商品類別
-                  </vs-th>
-                  <vs-th class="py-3" @click.native="filter('price', 'se')">
-                    商品價格
-                  </vs-th>
-                  <vs-th class="py-3" @click.native="filter('inventory', 'se')">
-                    在庫數量
-                  </vs-th>
-                  <vs-th class="py-3" @click.native="filter('launch', 'se')">
-                    商品狀態
-                  </vs-th>
-                  <vs-th class="py-3"  @click.native="filter('status', 'se')">
-                    上架狀態
-                  </vs-th>
-                  <vs-th class="py-3"  @click.native="filter('latest_time', 'se')">
-                    修改時間
-                  </vs-th>
-                  <vs-th class="py-3">
-                    操作
-                  </vs-th>
-                </template>
-          
-                <template slot-scope="{data}">
-                  <vs-tr :key="tr.id" v-for="tr in data" >
-                    <vs-td>
-                      {{tr.product_id}}
-                    </vs-td>
-                    <vs-td class="text-limit-10">
-                      {{tr.title}}
-                      
-                    </vs-td>
-
-                    <vs-td>
-                      {{tr.category}}
-                    </vs-td>
-          
-                    <vs-td>
-                      {{tr.price}}
-                    </vs-td>
-          
-                    <vs-td>
-                      {{tr.inventory}}
-                    </vs-td>
-
-                    <vs-td>
-                      <vs-td v-if="tr.launch">
-                        <vs-chip transparent color="#24c1a0">
-                          上架中
-                        </vs-chip>
-                      </vs-td>
-                      <vs-td v-else>
-                        <vs-chip transparent color="#a1202b">
-                          未上架
-                        </vs-chip>
-                      </vs-td>
-                      
-                    </vs-td>
-          
-                    <vs-td>
-                      <vs-chip
-                        v-if="tr.status == '可供銷售'"
-                        transparent
-                        color="#24c1a0"
-                      >
-                        可供銷售
-                      </vs-chip>
-                  
-                      <vs-chip
-                        v-else-if="tr.status == '需補貨'"
-                        transparent
-                        color="warning"
-                      >
-                        需補貨
-                      </vs-chip>
-                  
-                      <vs-chip
-                        v-else
-                        transparent
-                        color="#a1202b"
-                      >
-                        缺貨中
-                      </vs-chip>
-                    </vs-td>
-
-                    <vs-td>
-                      {{toTwTime(tr.latest_time)}}
-                    </vs-td>
-
-
-                    <vs-td>
-                      <vs-button @click="popupActivo=true; edit(tr.id)" >編輯商品</vs-button>
-                      <vs-button>調整庫存</vs-button>
-                    </vs-td>
-        
-                  </vs-tr>
-
-                  
-
-                  
-                </template>
-              </vs-table>
--->
+            
               <vs-popup class="holamundo"  title="編輯商品" :active.sync="popupActivo">
                 
                 
                 <vs-row>
+
                   <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
-                    <vs-input class="filter-input py-1" label-placeholder="商品名稱" v-model="valueTitle"/>
+                    <vs-input class="filter-input py-1" label-placeholder="商品編號" v-model="valuePId" color="#5b67a2"/>
                   </vs-col>
 
                   <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
-                    <vs-input class="filter-input py-1" label-placeholder="商品描述" v-model="valueDescription"/>
+                    <vs-input class="filter-input py-1" label-placeholder="商品名稱" v-model="valueTitle" color="#5b67a2"/>
+                  </vs-col>
+
+                  <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                    <vs-input class="filter-input py-1" label-placeholder="商品描述" v-model="valueDescription" color="#5b67a2"/>
                   </vs-col>
                 
                   <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
-                    <vs-input type="number" class="filter-input py-1" label-placeholder="商品價格" v-model.number="valuePrice"/>
+                    <vs-input type="number" class="filter-input py-1" label-placeholder="商品價格" v-model.number="valuePrice" color="#5b67a2"/>
                   </vs-col>
 
                   <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
-                    <vs-input type="number" class="filter-input py-1" label-placeholder="安全庫存量" v-model.number="valueSafetyStock"/>
+                    <vs-input type="number" class="filter-input py-1" label-placeholder="安全庫存量" v-model.number="valueSafetyStock" color="#5b67a2"/>
                   </vs-col>
 
 

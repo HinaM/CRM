@@ -1,12 +1,12 @@
 :root{
-  --blac: #1b3c53;
-  --bg: #f0f0f0;
-  --wh: #f6f5f2;
-  --br: #dccfc0;
-  --gr: #a2af9b;
-  --pri-btn: #819a91;
+  --blac: #545051;
+  --bg: #ffffff;
+  --wh: #F8F9FC;
+  --br: #BFC8EA;
+  --gr: #7B86AA;
+  --pri-btn: #5B67A2;
   --pri-sec: #f6f0f0;
-  --a-text: #a2af9b;
+  --a-text: #324897;
 }
 *{
     margin: 0;
@@ -17,6 +17,7 @@ body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: var(--bg);
+    min-height: 100vh;
 }
 /* Base padding utilities */
 .p-0 { padding: 0 !important; }
@@ -87,7 +88,6 @@ body {
   padding-bottom: 10px;
   border-radius: 5px;
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, .05);
-  background-color: var(--wh);
 }
 .vs-button-primary.vs-button-filled{
   background: var(--pri-btn) !important;
@@ -148,6 +148,9 @@ body {
   }
 .con-tab-ejemplo {
   width: 100%;
+}
+.thead{
+  background:var(--br) !important;
 }
 .table-scroll {
   width: 100%;

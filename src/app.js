@@ -25,6 +25,7 @@ new Vue({
       ],
       popupActivo: false,
       valueId: "",
+      valuePId: "",
       valueTitle: "",
       valuePrice: 0,
       valueDescription: "",
@@ -34,7 +35,7 @@ new Vue({
 
       catalog: [],
 
-
+      updateA_pid: "",
       updateA_title: "", 
       updateA_description: "" , 
       updateA_price: 0 ,
@@ -49,8 +50,8 @@ new Vue({
       searchId: "",
       searchCata: "",
       active:false,
-      
 
+      
     },
     async mounted() {
         try {
@@ -141,17 +142,20 @@ new Vue({
         URL.revokeObjectURL(url);
       },
       edit(n){
-        const editVal = [];
+        
 
         for(let i = 0 ; i <= this.tickets.length ; i++){
           if (n == this.tickets[i].id){
+            
             this.valueId = this.tickets[i].id;
+            this.valuePId = this.tickets[i].product_id;
             this.valueTitle = this.tickets[i].title;
             this.valuePrice = this.tickets[i].price;
             this.valueDescription = this.tickets[i].description;
             this.valueLaunch = this.tickets[i].launch;
             this.valueSafetyStock = this.tickets[i].safety_stock;
             this.valueCata = this.tickets[i].category;
+            
           }
         }
         
@@ -163,10 +167,15 @@ new Vue({
 
         const id = n;
         
+        
+
+        
+        
         if (
           !this.valueTitle.trim() ||
           !this.valueDescription.trim() ||
-          !this.valueCata.trim()
+          !this.valueCata.trim() ||
+          !this.valuePId.trim()
         ) {
           alert("請輸入所有欄位內容。");
           return;
@@ -188,7 +197,7 @@ new Vue({
 
         
 
-        console.log(id);
+        
         
         this.updateA_title = this.valueTitle;
         this.updateA_description = this.valueDescription;
@@ -196,18 +205,21 @@ new Vue({
         this.updateA_safety_stock = this.valueSafetyStock;
         this.updateA_launch = this.valueLaunch;
         this.updateA_cata = this.valueCata;
+        this.updateA_pid = this.valuePId;
 
+       
 
-        /*alert(this.updateA_launch);*/
+        
         const now = new Date().toISOString()
         
         const { error: updateError } = await supabase
         .from('tickets')
-        .update({ title: this.updateA_title ,  description: this.updateA_description , price: this.updateA_price , safety_stock:this.updateA_safety_stock , launch: this.updateA_launch , category: this.updateA_cata, latest_time: now})
+        .update({ product_id:this.updateA_pid, title: this.updateA_title ,  description: this.updateA_description , price: this.updateA_price , safety_stock:this.updateA_safety_stock , launch: this.updateA_launch , category: this.updateA_cata, latest_time: now})
         .eq('id', id);
 
         alert("修改成功！");
         window.location.reload();
+        
 
       },
       async searchTickets() {
