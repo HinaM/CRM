@@ -47,7 +47,8 @@ new Vue({
 
       searchTitle: "",
       searchId: "",
-      searchCata: ""
+      searchCata: "",
+      active:false,
       
 
     },
@@ -263,7 +264,46 @@ new Vue({
           console.error('searchTickets exception:', err)
         }
       },
-    
+      async clearAll() {
+        
+        this.searchTitle = this.searchId = this.searchCata = "";
+      
+        try {
+          let query = supabase
+            .from('tickets')
+            .select('*')
+            .order('id', { ascending: true })
+      
+          
+         
+      
+        
+          const { data, error } = await query
+      
+          if (error) {
+            console.error('searchTickets error:', error)
+            return
+          }
+      
+       
+          const rows = data || []
+          this.tickets = rows.map(row => {
+            let statusText = ''
+      
+            if (row.inventory > 0 && row.inventory >= row.safety_stock) {
+              statusText = '可供銷售'
+            } else if (row.inventory > 0 && row.inventory < row.safety_stock) {
+              statusText = '需補貨'
+            } else {
+              statusText = '缺貨中'
+            }
+      
+            return { ...row, status: statusText }
+          })
+        } catch (err) {
+          console.error('searchTickets exception:', err)
+        }
+      },
       
       async filter(n) {
         this.filterbtn = n
